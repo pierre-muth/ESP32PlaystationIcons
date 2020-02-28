@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <WiFi.h>
-#include <DNSServer.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
 #include <NeoPixelBus.h>
@@ -14,7 +13,6 @@ RgbwColor TRIANGLEcolor = RgbwColor(0,255,0, 32);
 RgbwColor STARTcolor = RgbwColor(0,0,0,0);
 
 IPAddress apIP(192, 168, 1, 1);
-DNSServer dnsServer;
 AsyncWebServer server(80);
 AsyncWebSocket webSocket("/ws");
 
@@ -203,7 +201,6 @@ void onWebSocketEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, Aw
       if (data[1] == 'w') {
           WiFi.disconnect();   
           WiFi.mode(WIFI_OFF);
-          dnsServer.stop();
           ledcWrite(0, 192);
       }
     } 
@@ -216,8 +213,6 @@ void setup() {
 
   WiFi.disconnect();   
   WiFi.mode(WIFI_OFF); //added to start with the wifi off, avoid crashing
-  dnsServer.stop();
-
   delay(100);
   
   WiFi.persistent(false);
@@ -226,8 +221,6 @@ void setup() {
   WiFi.softAP("Playstation Icons");
   WiFi.onEvent(onWiFiStationConnected, SYSTEM_EVENT_AP_STACONNECTED);
   WiFi.onEvent(onWiFiStationConnected, SYSTEM_EVENT_AP_STADISCONNECTED);
-
-  dnsServer.start(DNS_PORT, "*", apIP); // if DNSServer is started with "*" for domain name, it will reply with provided IP to all DNS request
 
   if(!SPIFFS.begin()){
     Serial.println("An Error has occurred while mounting SPIFFS");
@@ -283,7 +276,17 @@ void setup() {
   server.addHandler(&webSocket);
   server.begin();
   int i = 0;
-  
+
+  for (i=0; i<4; i++) {
+    squareAnimationState[i].StartingColor = STARTcolor;
+    squareAnimationState[i].EndingColor = SQUAREcolor;
+    squareAnimations.StartAnimation(i, 1000, BlendAnimUpdateSquare);
+  }
+  while (squareAnimations.IsAnimating()) {
+    squareAnimations.UpdateAnimations();
+    stripSquare.Show();
+  }
+
   for (i=0; i<4; i++) {
     crossAnimationState[i].StartingColor = STARTcolor;
     crossAnimationState[i].EndingColor = CROSScolor;
@@ -302,16 +305,6 @@ void setup() {
   while (circleAnimations.IsAnimating()) {
     circleAnimations.UpdateAnimations();
     stripCircle.Show();
-  }
-
-  for (i=0; i<4; i++) {
-    squareAnimationState[i].StartingColor = STARTcolor;
-    squareAnimationState[i].EndingColor = SQUAREcolor;
-    squareAnimations.StartAnimation(i, 1000, BlendAnimUpdateSquare);
-  }
-  while (squareAnimations.IsAnimating()) {
-    squareAnimations.UpdateAnimations();
-    stripSquare.Show();
   }
 
   for (i=0; i<3; i++) {
@@ -334,10 +327,6 @@ void setup() {
 }
 
 void loop() {
-
-  if(WiFi.isConnected()){
-    dnsServer.processNextRequest();
-  }
 
   if (animateRainbow == 1) {
 
