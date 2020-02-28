@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type = "text/javascript">
+ 
+    var ws = null;
+
+    function closeWebsocket(){
+        ws.close();
+        ws = null;
+    }
+
+    function setColor(name, value) {  
+        if(ws == null) ws = new WebSocket("ws://192.168.1.1/ws");
+        ws.send(name+value);
+    }
+
+    function setAnimation(name, value) {  
+        if(ws == null) ws = new WebSocket("ws://192.168.1.1/ws");
+        ws.send(name+value);
+    }
+
+    function makeWebSocket() {
+      if(ws == null) ws = new WebSocket("ws://192.168.1.1/ws");
+    }
+
+    function killWifi() {
+      if(ws == null) ws = new WebSocket("ws://192.168.1.1/ws");
+      ws.send("kw");
+    }
+
+  </script>
+
+  <style>
+    html{
+      font-family:Helvetica;
+      display:inline-block;
+      margin:0 auto;
+      text-align:center;
+      background-color:#fff;
+    }
+    div{ 
+      max-width:300px;
+      margin: auto;
+      border: 1px solid #888;
+      border-radius:1em;
+    }
+  </style>
+
+</head>
+<body onload="makeWebSocket()"> 
+<h1>PlayStation<br>Icons colors</h1>
+<b>
+<div>
+  <img src="square.jpg" alt="Square" width="50" height="50"></br>
+  <font color="red">R: </font> <input oninput="setColor('sr', this.value)" type="range" min="0" max="255" value="%SR%"><br>
+  <font color="green">G: </font> <input oninput="setColor('sg', this.value)" type="range" min="0" max="255" value="%SG%"><br>
+  <font color="blue">B: </font> <input oninput="setColor('sb', this.value)" type="range" min="0" max="255" value="%SB%"><br>
+  <font color="black">W: </font> <input oninput="setColor('sw', this.value)" type="range" min="0" max="255" value="%SW%"><br>
+  </br>
+</div>
+</br>
+<div>
+  <img src="circle.jpg" alt="Circle" width="50" height="50"></br>
+  <font color="red">R: </font>  <input oninput="setColor('cr', this.value)" type="range" min="0" max="255" value="%CR%"><br>
+  <font color="green">G: </font> <input oninput="setColor('cg', this.value)" type="range" min="0" max="255" value="%CG%"><br>
+  <font color="blue">B: </font> <input oninput="setColor('cb', this.value)" type="range" min="0" max="255" value="%CB%"><br>
+  <font color="black">W: </font> <input oninput="setColor('cw', this.value)" type="range" min="0" max="255" value="%CW%"><br>
+  </br>
+</div>
+</br>
+<div>
+  <img src="cross.jpg" alt="Cross" width="50" height="50"></br>
+  <font color="red">R: </font>  <input oninput="setColor('xr', this.value)" type="range" min="0" max="255" value="%XR%"><br>
+  <font color="green">G: </font> <input oninput="setColor('xg', this.value)" type="range" min="0" max="255" value="%XG%"><br>
+  <font color="blue">B: </font> <input oninput="setColor('xb', this.value)" type="range" min="0" max="255" value="%XB%"><br>
+  <font color="black">W: </font> <input oninput="setColor('xw', this.value)" type="range" min="0" max="255" value="%XW%"><br>
+  </br>
+</div>
+</br>
+<div>
+  <img src="triangle.jpg" alt="Triangle" width="50" height="50"></br>
+  <font color="red">R: </font>  <input oninput="setColor('tr', this.value)" type="range" min="0" max="255" value="%TR%"><br>
+  <font color="green">G: </font> <input oninput="setColor('tg', this.value)" type="range" min="0" max="255" value="%TG%"><br>
+  <font color="blue">B: </font> <input oninput="setColor('tb', this.value)" type="range" min="0" max="255" value="%TB%"><br>
+  <font color="black">W: </font> <input oninput="setColor('tw', this.value)" type="range" min="0" max="255" value="%TW%"><br>
+  </br>
+</div>
+<br>
+<div>
+  <label>Animate</label></br>
+</b>
+  Rainbow <input oninput="setAnimation('ar', this.checked)" type="checkbox" %AR%><br>
+  Brightness: </font> <input oninput="setColor('rb', this.value)" type="range" min="1" max="100" value="%RB%"><br>
+  </br>
+</div>
+<br>
+<div>
+  <b>Wifi</b><br>
+  <button type="button" onclick="killWifi()">Turn OFF</button> <br>
+  Reset will turn it back online.
+  </br>
+</div>
+
+</br>
+</body>
+</html>
